@@ -1,0 +1,18 @@
+[package]
+name = "mahjong_logic"
+version = "0.1.0"
+authors = ["zhanghongpeng"]
+edition = "2021"
+crate-type = ["cdylib"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "MahjongLogic" #生成dll的文件名
+crate-type = ["dylib"]
+
+[dependencies]
+fnv = "*"
+lazy_static = "*"
+static_init = "*"
+phf = "*"
+rand = "*"
