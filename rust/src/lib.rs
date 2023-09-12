@@ -24,34 +24,30 @@ type Eigen = u64;
     [
         [0]:0x00_000_000_000,
         [1]:0x00_000_000_000,
-        [2]:0x00_000_000_000,
-        [3]:0x00_000_000_000,
-        [4]:0x00_000_000_000,
-        [5]:0x00_000_000_000,
-        [6]:0x00_000_000_000,
-        [7]:total_card_count //牌总数
-        [8]:laizi_count //癞子数
+        [2]:total_card_count //牌总数
+        [3]:laizi_count //癞子数
     ]
     Cards形如{
 */
-type Matrix = [Eigen; 9];
+type Matrix = [Eigen; 4];
 type Color = usize;
 type Num = usize;
 type Card = u8;
 type Cards = Vec<Card>;
 
 const INVALID_CARD: Card = 99;
-const EIGEN_MAP: [Eigen; 10] = [
+const EIGEN_MAP: [Eigen; 11] = [
     0,
-    0x1_000_000_001,
-    0x1_000_000_010,
-    0x1_000_000_100,
-    0x1_000_001_000,
-    0x1_000_010_000,
-    0x1_000_100_000,
-    0x1_001_000_000,
-    0x1_010_000_000,
-    0x1_100_000_000,
+    0x1_0_000_000_001,
+    0x1_0_000_000_010,
+    0x1_0_000_000_100,
+    0x1_0_000_001_000,
+    0x1_0_000_010_000,
+    0x1_0_000_100_000,
+    0x1_0_001_000_000,
+    0x1_0_010_000_000,
+    0x1_0_100_000_000,
+    0x1_1_000_000_000,
 ];
 
 const SHIFT_MAP: [u32; 11] = [
@@ -60,7 +56,7 @@ const SHIFT_MAP: [u32; 11] = [
     8, 12, 16, 20, 24, 28, 32, //9
     36,
 ];
-const KEZI_ARR: [Eigen; 10] = [
+const KEZI_ARR: [Eigen; 11] = [
     0,
     0x3_000_000_003,
     0x3_000_000_030,
@@ -71,8 +67,9 @@ const KEZI_ARR: [Eigen; 10] = [
     0x3_003_000_000,
     0x3_030_000_000,
     0x3_300_000_000,
+    0x3_3_000_000_000,
 ];
-const SHUNZI_ARR: [Eigen; 8] = [
+const SHUNZI_ARR: [Eigen; 10] = [
     0,
     0x3_000_000_111,
     0x3_000_001_110,
@@ -81,8 +78,10 @@ const SHUNZI_ARR: [Eigen; 8] = [
     0x3_001_110_000,
     0x3_011_100_000,
     0x3_111_000_000,
+    0x3_1_110_000_000,
+    0x3_1_001_000_010,
 ];
-const EYES_ARR: [Eigen; 10] = [
+const EYES_ARR: [Eigen; 11] = [
     0,
     0x2_000_000_002,
     0x2_000_000_020,
@@ -93,6 +92,7 @@ const EYES_ARR: [Eigen; 10] = [
     0x2_002_000_000,
     0x2_020_000_000,
     0x2_200_000_000,
+    0x2_2_000_000_000,
 ];
 
 const DAZI_ARR: [Eigen; 24] = [
@@ -122,20 +122,6 @@ const DAZI_ARR: [Eigen; 24] = [
     0x2200000000, // 对子
 ];
 
-// 风牌不能组成顺子
-const FENG_MIANZI_ARR: [Eigen; 4] = [
-    0x3_000_000_003,
-    0x3_000_000_030,
-    0x3_000_000_300,
-    0x3_000_003_000,
-];
-
-const FENG_DAZI_ARR: [Eigen; 4] = [0x2000000002, 0x2000000020, 0x2000000200, 0x2000002000];
-
-const JIAN_MIANZI_ARR: [Eigen; 3] = [0x3_000_000_003, 0x3_000_000_030, 0x3_000_000_300];
-
-const JIAN_DAZI_ARR: [Eigen; 3] = [0x2000000002, 0x2000000020, 0x2000000200];
-
 const MIANZI_ARR: [Eigen; 16] = [
     0x3_000_000_003,
     0x3_000_000_030,
@@ -155,26 +141,14 @@ const MIANZI_ARR: [Eigen; 16] = [
     0x3_111_000_000,
 ];
 
-const INVALID_COLOR: Color = 99;
-const COLOR_WAN: Color = 0;
-const COLOR_TONG: Color = 1;
-const COLOR_TIAO: Color = 2;
-const COLOR_FENG: Color = 3;
-const COLOR_JIAN: Color = 4;
-const COLOR_HUA: Color = 5;
-const COLOR_JOKER: Color = 6;
-const INDEX_CARD_COUNT: Color = 7;
-const INDEX_LAIZI_COUNT: Color = 8;
+const INVALID_COLOR: i32 = 99;
 
-const VALID_NUMS: [&[Num]; 7] = [
-    &[1, 2, 3, 4, 5, 6, 7, 8, 9], //[COLOR_WAN]
-    &[1, 2, 3, 4, 5, 6, 7, 8, 9], //[COLOR_TONG]
-    &[1, 2, 3, 4, 5, 6, 7, 8, 9], //[COLOR_TIAO]
-    &[1, 2, 3, 4],                //[COLOR_FENG]
-    &[1, 2, 3],                   //[COLOR_JIAN]
-    &[1, 2, 3, 4, 5, 6, 7, 8],    //[COLOR_HUA]
-    &[1],                         //[COLOR_JOKER]
-];
+const COLOR_SMALL: Color = 0;
+const COLOR_BIG: Color = 1;
+const INDEX_CARD_COUNT: Color = 2;
+const INDEX_LAIZI_COUNT: Color = 3;
+
+const VALID_NUMS: &[Num; 10] = &[1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 // type HuEigenSet<K> = BTreeSet<K>;
 type HuEigenMap = HashMap<Eigen, i32, BuildHasherDefault<FnvHasher>>;
@@ -207,7 +181,7 @@ lazy_static! {
     // static ref FENG_HUMAP: HuEigenSet = gen_humap(&HumapType::FENG);
 
     //14张情况下，正确大小为227980（含0）；17张牌情况下，正确大小为627091（含0）
-    static ref LAIZI_HUMAP: HuEigenMap = gen_laizimap(&HumapType::BASE, 7);
+    static ref LAIZI_HUMAP: HuEigenMap = gen_laizimap(7);
     //14张情况下，正确大小为237（含0）；17张牌情况下，正确大小为237（含0）
     // static ref FENG_LAIZI_HUMAP: HuEigenSet = gen_laizimap(&HumapType::FENG, 4);
 
@@ -329,14 +303,11 @@ fn combine(
     combine(data, step + 1, select_data, target_num, callback); //不选择当前元素
 }
 
-fn gen_humap(humap_type: &HumapType) -> HuEigenMap {
+fn gen_humap() -> HuEigenMap {
     let max_handcard_count = 17;
     let mut m = HuEigenMap::default();
 
-    let max_num = match humap_type {
-        HumapType::BASE => 9,
-        HumapType::FENG => 4,
-    };
+    let max_num = 10;
 
     for mianzi_cnt in 1..=(max_handcard_count - 2) / 3 {
         let mut data = vec![0]; //0这里代表没有面子的情况
@@ -344,13 +315,11 @@ fn gen_humap(humap_type: &HumapType) -> HuEigenMap {
             data.push(KEZI_ARR[num]);
         }
 
-        if let HumapType::BASE = humap_type {
-            for _ in 0..mianzi_cnt {
-                for num in 1..=7 {
-                    data.push(SHUNZI_ARR[num]);
-                }
+        for _ in 0..mianzi_cnt {
+            for num in 1..=7 {
+                data.push(SHUNZI_ARR[num]);
             }
-        };
+        }
 
         let mut callback = |mut select_data_eigen: Eigen| {
             if !m.contains_key(&select_data_eigen) {
@@ -371,14 +340,11 @@ fn gen_humap(humap_type: &HumapType) -> HuEigenMap {
     return m;
 }
 
-fn gen_laizimap(humap_type: &HumapType, target_que_count: i32) -> HuEigenMap {
-    let max_num = match humap_type {
-        HumapType::BASE => 9,
-        HumapType::FENG => 4,
-    };
+fn gen_laizimap(target_que_count: i32) -> HuEigenMap {
+    let max_num = 10;
 
-    let mut humap = gen_humap(&humap_type);
-    let mut m = gen_humap(&humap_type);
+    let mut humap = gen_humap();
+    let mut m = gen_humap();
 
     let mut gen_sub_map = |humap: &HuEigenMap, que_count| {
         let mut new_m = HuEigenMap::default();
@@ -467,14 +433,10 @@ fn _get_new_random_card_walls() -> Cards {
     let card_walls = vec![
         0x01, 0x01, 0x01, 0x01, 0x02, 0x02, 0x02, 0x02, 0x03, 0x03, 0x03, 0x03, 0x04, 0x04, 0x04,
         0x04, 0x05, 0x05, 0x05, 0x05, 0x06, 0x06, 0x06, 0x06, 0x07, 0x07, 0x07, 0x07, 0x08, 0x08,
-        0x08, 0x08, 0x09, 0x09, 0x09, 0x09, 0x11, 0x11, 0x11, 0x11, 0x12, 0x12, 0x12, 0x12, 0x13,
-        0x13, 0x13, 0x13, 0x14, 0x14, 0x14, 0x14, 0x15, 0x15, 0x15, 0x15, 0x16, 0x16, 0x16, 0x16,
-        0x17, 0x17, 0x17, 0x17, 0x18, 0x18, 0x18, 0x18, 0x19, 0x19, 0x19, 0x19, 0x21, 0x21, 0x21,
-        0x21, 0x22, 0x22, 0x22, 0x22, 0x23, 0x23, 0x23, 0x23, 0x24, 0x24, 0x24, 0x24, 0x25, 0x25,
-        0x25, 0x25, 0x26, 0x26, 0x26, 0x26, 0x27, 0x27, 0x27, 0x27, 0x28, 0x28, 0x28, 0x28, 0x29,
-        0x29, 0x29, 0x29, 0x31, 0x31, 0x31, 0x31, 0x32, 0x32, 0x32, 0x32, 0x33, 0x33, 0x33, 0x33,
-        0x34, 0x34, 0x34, 0x34, 0x41, 0x41, 0x41, 0x41, 0x42, 0x42, 0x42, 0x42, 0x43, 0x43, 0x43,
-        0x43,
+        0x08, 0x08, 0x09, 0x09, 0x09, 0x09, 0x0A, 0x0A, 0x0A, 0x0A, 0x01, 0x01, 0x01, 0x01, 0x12,
+        0x12, 0x12, 0x12, 0x13, 0x13, 0x13, 0x13, 0x14, 0x14, 0x14, 0x14, 0x15, 0x15, 0x15, 0x15,
+        0x16, 0x16, 0x16, 0x16, 0x17, 0x17, 0x17, 0x17, 0x18, 0x18, 0x18, 0x18, 0x19, 0x19, 0x19,
+        0x19, 0x1A, 0x1A, 0x1A, 0x1A,
     ];
 
     _shuffle(card_walls)
@@ -536,7 +498,7 @@ impl MahjongLogic {
     }
 
     fn is_eigen_match(color_eigen: Eigen) -> i32 {
-        return LAIZI_HUMAP.get(&color_eigen).cloned().unwrap_or(99);
+        return LAIZI_HUMAP.get(&color_eigen).cloned().unwrap_or(INVALID_COLOR);
     }
 }
 
@@ -581,7 +543,7 @@ impl MahjongLogic {
     //将原始手牌数组变成二维数组
     #[no_mangle]
     pub extern "C" fn cards_to_matrix(&self, cards: Cards) -> Matrix {
-        let mut m: Matrix = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        let mut m: Matrix = [0, 0, 0, 0];
         self.matrix_add_cards(&mut m, cards);
         return m;
     }
@@ -592,7 +554,7 @@ impl MahjongLogic {
         let mut cards = Cards::new();
 
         for &color in &self.valid_colors {
-            for &num in VALID_NUMS[color] {
+            for &num in VALID_NUMS {
                 let count = MahjongLogic::get_num_cardcount(m[color], num);
                 if count > 0 {
                     let card = MahjongLogic::make_card(color, num);
@@ -646,7 +608,7 @@ impl MahjongLogic {
         let mut cards: Cards = Cards::default();
         for &color in &self.valid_colors {
             if m[color] & 0x444_444_444 != 0 {
-                for &num in VALID_NUMS[color] {
+                for &num in VALID_NUMS {
                     if MahjongLogic::get_num_cardcount(m[color], num) == 4 {
                         cards.push(MahjongLogic::make_card(color, num));
                     }
@@ -660,7 +622,7 @@ impl MahjongLogic {
     pub extern "C" fn get_kezi(&self, m: Matrix, contain_gen: bool) -> Cards {
         let mut cards: Cards = Cards::default();
         for &color in &self.valid_colors {
-            for &num in VALID_NUMS[color] {
+            for &num in VALID_NUMS {
                 let count = MahjongLogic::get_num_cardcount(m[color], num);
                 if count == 3 || (contain_gen && count == 4) {
                     cards.push(MahjongLogic::make_card(color, num));
@@ -691,7 +653,7 @@ impl MahjongLogic {
                 continue;
             }
 
-            for &num in VALID_NUMS[color] {
+            for &num in VALID_NUMS {
                 let count = MahjongLogic::get_num_cardcount(color_eigen, num);
                 if count > 0 {
                     let card = MahjongLogic::make_card(color, num);
@@ -730,13 +692,6 @@ impl MahjongLogic {
         if (MahjongLogic::get_total_cardcount(m) + 1) % 3 != 2 {
             return ting_cards;
         } //要嘛加上一张牌可以凑成3N牌型（不带将）要嘛凑成3N+2（包含七对的14张）
-
-        if self.contain_qidui {
-            let qidui_ting_card = self.get_ting_qidui_card(m);
-            if qidui_ting_card != INVALID_CARD {
-                ting_cards.push(qidui_ting_card);
-            }
-        }
 
         //各种牌型的次数
         let mut count_2 = 0; //将
@@ -788,7 +743,7 @@ impl MahjongLogic {
                 count_2 -= borrow_count_2;
             }
 
-            for &num in VALID_NUMS[color] {
+            for &num in VALID_NUMS {
                 //添加完牌之后的新特征值
                 let new_eigen = m[color] + EIGEN_MAP[num];
                 let new_cardcount = color_cardcount + 1;
@@ -835,7 +790,7 @@ impl MahjongLogic {
             let color_cardcount = MahjongLogic::get_eigen_cardcount(color_eigen);
             let color_need = MahjongLogic::is_eigen_match(color_eigen);
 
-            if color_need == 99 {
+            if color_need == INVALID_COLOR {
                 return false;
             }
 
@@ -865,17 +820,13 @@ impl MahjongLogic {
         if MahjongLogic::get_total_cardcount(m) % 3 != 1 {
             return false;
         }
-        // 七对判断
-        if self.contain_qidui && self.is_ting_qidui(m) {
-            return true;
-        }
 
         self.match_shape(&m, 1)
     }
 
     #[no_mangle]
     pub extern "C" fn is_ting_any(&self, mut m: Matrix) -> bool {
-        if m[INDEX_LAIZI_COUNT]==0 {
+        if m[INDEX_LAIZI_COUNT] == 0 {
             return false;
         }
         m[INDEX_LAIZI_COUNT] -= 1;
@@ -900,11 +851,6 @@ impl MahjongLogic {
             return false;
         }
 
-        // 七对判断
-        if self.contain_qidui && self.belong_qidui(m) {
-            return true;
-        }
-
         return self.match_shape(&m, 0);
     }
 
@@ -916,270 +862,18 @@ impl MahjongLogic {
         return res;
     }
 
-    fn match_qidui_shape(&self, &m: &Matrix, max_lack: i32) -> bool {
-        let mut total_need = 0;
-
-        for &color in &self.valid_colors {
-            for &num in VALID_NUMS[color] {
-                total_need += MahjongLogic::get_num_cardcount(m[color], num) & 0x1;
-            }
-        }
-
-        if total_need - MahjongLogic::get_laizi_cardcount(m) > max_lack {
-            return false;
-        }
-
-        return true;
-    }
-
-    fn is_ting_qidui(&self, m: Matrix) -> bool {
-        let total_cardcount = MahjongLogic::get_total_cardcount(m);
-        if total_cardcount != 13 {
-            return false;
-        }
-
-        return self.match_qidui_shape(&m, 1);
-    }
-
-    //属于七对
-    #[no_mangle]
-    pub fn belong_qidui(&self, m: Matrix) -> bool {
-        let total_cardcount = MahjongLogic::get_total_cardcount(m);
-        if total_cardcount != 14 {
-            return false;
-        }
-
-        if m[INDEX_LAIZI_COUNT] == 0 {
-            for &color in &self.valid_colors {
-                let color_eigen = m[color];
-                if color_eigen & 0x111_111_111 != 0 {
-                    return false;
-                }
-            }
-        } else {
-            return self.match_qidui_shape(&m, 0);
-        }
-
-        return true;
-    }
-
-    //判断是否听七对
-    fn get_ting_qidui_card(&self, m: Matrix) -> Card {
-        let total_cardcount = MahjongLogic::get_total_cardcount(m);
-        if total_cardcount != 13 {
-            return INVALID_CARD;
-        }
-
-        if m[INDEX_LAIZI_COUNT] == 0 {
-            let mut possible_qidui_num = 0;
-            let mut possible_qidui_color = INVALID_COLOR;
-
-            for &color in &self.valid_colors {
-                let color_eigen = m[color];
-                if color_eigen == 0 {
-                    continue;
-                }
-
-                let bitand_res = color_eigen & 0x111_111_111;
-                if bitand_res != 0 {
-                    //有重复的潜在听七对的数字，本牌型肯定不听七对
-                    if possible_qidui_color != INVALID_COLOR {
-                        return INVALID_CARD;
-                    }
-
-                    if bitand_res & (bitand_res - 1) == 0 {
-                        let key = bitand_res + 0x1000_000_000;
-                        match REVERSE_EIGEN_MAP.get(&key) {
-                            Some(&x) => {
-                                possible_qidui_num = x;
-                                possible_qidui_color = color
-                            }
-                            None => {
-                                // possible_qidui_num = 0;
-                                panic!("计算错误，EIGEN_MAP不包含bitand_res {}", bitand_res);
-                            }
-                        }
-                    } else {
-                        return INVALID_CARD;
-                    }
-                }
-            }
-
-            if possible_qidui_color != INVALID_COLOR {
-                return MahjongLogic::make_card(possible_qidui_color, possible_qidui_num);
-            }
-        }
-
-        return INVALID_CARD;
-    }
-
-    //判断是否属于十三幺
-    #[no_mangle]
-    fn belong_shisanyao(&self, m: Matrix) -> bool {
-        let total_cardcount = MahjongLogic::get_total_cardcount(m);
-        if total_cardcount != 14 {
-            return false;
-        }
-
-        for &color in &self.valid_colors {
-            let color_eigen = m[color];
-
-            let match_eigen = match color {
-                COLOR_WAN | COLOR_TONG | COLOR_TIAO => 0x100_000_001,
-                COLOR_FENG => 0x1111,
-                COLOR_JIAN => 0x111,
-                _ => 0,
-            };
-
-            if !MahjongLogic::is_eigen_include(color_eigen, match_eigen) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    fn get_ting_shisanyao_card(m: Matrix) -> Card {
-        return INVALID_CARD;
-    }
-
-    #[no_mangle]
-    pub extern "C" fn is_qingyise(&self, m: Matrix) -> Color {
-        let mut color_count = 0;
-        let mut color_qingyise: Color = 99;
-        for &color in &self.valid_colors {
-            if m[color] != 0 {
-                color_count += 1;
-                color_qingyise = color;
-            }
-        }
-        return color_qingyise;
-    }
-
-    #[no_mangle]
-    pub extern "C" fn is_daiyaojiu(&self, m: Matrix) -> bool {
-        let mut total_need = 0;
-
-        for &color in &self.valid_colors {
-            let color_eigen = m[color];
-            if color_eigen != 0 {
-                // 不能有4，5，6的值
-                if color_eigen & 0x000FFF000 != 0 {
-                    return false;
-                }
-            }
-
-            let count_of_1 = MahjongLogic::get_num_cardcount(color_eigen, 1);
-            let count_of_2 = MahjongLogic::get_num_cardcount(color_eigen, 2);
-            let count_of_3 = MahjongLogic::get_num_cardcount(color_eigen, 3);
-
-            let shunzi_123_count = cmp::max(count_of_2, count_of_3);
-            total_need = total_need + (shunzi_123_count - count_of_2);
-            total_need = total_need + (shunzi_123_count - count_of_3);
-            total_need = total_need
-                + (if count_of_1 >= shunzi_123_count {
-                    0
-                } else {
-                    shunzi_123_count - count_of_1
-                });
-
-            let count_of_7 = MahjongLogic::get_num_cardcount(color_eigen, 7);
-            let count_of_8 = MahjongLogic::get_num_cardcount(color_eigen, 8);
-            let count_of_9 = MahjongLogic::get_num_cardcount(color_eigen, 9);
-
-            let shunzi_789_count = cmp::max(count_of_7, count_of_8);
-            total_need = total_need + (shunzi_789_count - count_of_7);
-            total_need = total_need + (shunzi_789_count - count_of_8);
-            total_need = total_need
-                + (if count_of_9 >= shunzi_789_count {
-                    0
-                } else {
-                    shunzi_789_count - count_of_9
-                });
-
-            if total_need > MahjongLogic::get_laizi_cardcount(m) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    // 连七对
-    #[no_mangle]
-    pub extern "C" fn is_lianqidui(&self, m: Matrix) -> bool {
-        let color_qingyise = self.is_qingyise(m);
-
-        if color_qingyise == 99 {
-            return false;
-        }
-        let color_eigen = m[color_qingyise];
-
-        for &lianqi_eigen in &[0xe222222200, 0xe022222220, 0xe002222222] {
-            if MahjongLogic::is_eigen_include(lianqi_eigen, color_eigen) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    #[no_mangle]
-    pub extern "C" fn is_jiulianbaodeng(&self, m: Matrix) -> bool {
-        let color_qingyise = self.is_qingyise(m);
-
-        if color_qingyise == 99 {
-            return false;
-        }
-        let color_eigen = m[color_qingyise];
-
-        for &jiulian_eigen in &[
-            0xe311111114,
-            0xe311111123,
-            0xe311111213,
-            0xe311112113,
-            0xe311121113,
-            0xe311211113,
-            0xe312111113,
-            0xe321111113,
-            0xe411111113,
-        ] {
-            if MahjongLogic::is_eigen_include(jiulian_eigen, color_eigen) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    fn get_deigens(color: Color, pair_type: PairType) -> Vec<Eigen> {
-        match color {
-            COLOR_WAN | COLOR_TONG | COLOR_TIAO => match pair_type {
-                PairType::MianZi => MIANZI_ARR.to_vec(),
-                PairType::DaZi => DAZI_ARR.to_vec(),
-                _ => MIANZI_ARR.to_vec(),
-            },
-            COLOR_FENG => match pair_type {
-                PairType::MianZi => FENG_MIANZI_ARR.to_vec(),
-                PairType::DaZi => FENG_DAZI_ARR.to_vec(),
-                _ => MIANZI_ARR.to_vec(),
-            },
-            COLOR_JIAN => match pair_type {
-                PairType::MianZi => JIAN_MIANZI_ARR.to_vec(),
-                PairType::DaZi => JIAN_DAZI_ARR.to_vec(),
-                _ => MIANZI_ARR.to_vec(),
-            },
-            _ => match pair_type {
-                PairType::MianZi => MIANZI_ARR.to_vec(),
-                PairType::DaZi => DAZI_ARR.to_vec(),
-                _ => MIANZI_ARR.to_vec(),
-            },
+    fn get_deigens(pair_type: PairType) -> Vec<Eigen> {
+        match pair_type {
+            PairType::MianZi => MIANZI_ARR.to_vec(),
+            PairType::DaZi => DAZI_ARR.to_vec(),
+            _ => MIANZI_ARR.to_vec(),
         }
     }
 
     fn rid_guzhang(color: Color, mut eigen: Eigen, tmp: &mut Vec<Vec<Deigen>>) {
         let path_index = tmp.len() - 1;
         if eigen != 0 {
-            for &num in VALID_NUMS[color] {
+            for &num in VALID_NUMS {
                 let count = MahjongLogic::get_num_cardcount(eigen, num);
                 if count > 0 {
                     let deigen = EIGEN_MAP[num];
@@ -1201,7 +895,7 @@ impl MahjongLogic {
 
     fn rid_dazi(color: Color, mut eigen: Eigen, tmp: &mut Vec<Vec<Deigen>>) {
         let mut rid_times = 0;
-        let a = MahjongLogic::get_deigens(color, PairType::DaZi);
+        let a = MahjongLogic::get_deigens(PairType::DaZi);
         for deigen in a {
             if MahjongLogic::is_eigen_include(eigen, deigen) {
                 let path_index = tmp.len() - 1;
@@ -1225,7 +919,7 @@ impl MahjongLogic {
 
     fn rid_mianzi(color: Color, mut eigen: Eigen, tmp: &mut Vec<Vec<Deigen>>) {
         let mut rid_times = 0;
-        let a = MahjongLogic::get_deigens(color, PairType::MianZi);
+        let a = MahjongLogic::get_deigens(PairType::MianZi);
         for deigen in a {
             if MahjongLogic::is_eigen_include(eigen, deigen) {
                 let path_index = tmp.len() - 1;
@@ -1305,7 +999,7 @@ impl MahjongLogic {
                     let pair_type = &vv.pair_type;
                     let mut cards = Cards::default();
                     // todo 优化为直接取预存结果
-                    for &num in VALID_NUMS[color] {
+                    for &num in VALID_NUMS {
                         let count = MahjongLogic::get_num_cardcount(deigen, num);
                         if count > 0 {
                             let card = MahjongLogic::make_card(color, num);
@@ -1405,7 +1099,6 @@ fn bench_is_hu_speed(b: &mut Bencher) {
 
 #[test]
 fn test_get_ting_cards() {
-
     let laizi_cards = vec![0x61];
     let ml = MahjongLogic {
         valid_colors: vec![0, 1, 2],
@@ -1413,7 +1106,7 @@ fn test_get_ting_cards() {
         contain_qidui: true,
     };
 
-    let cards = vec![38,34,34,23,22,21,21,19,19,18,7,5,4,2];
+    let cards = vec![38, 34, 34, 23, 22, 21, 21, 19, 19, 18, 7, 5, 4, 2];
     let m = ml.cards_to_matrix(cards);
 
     println!("{:?}", ml.get_ting_pairs(m).len());
